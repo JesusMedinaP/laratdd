@@ -67,4 +67,29 @@ class FilterUsersTest extends TestCase
             ->contains($user)
             ->notContains($admin);
     }
+
+    /** @test  */
+    function filter_users_by_skills(){
+        $php = factory(Skill::class)->create(['name' => 'php']);
+        $css = factory(Skill::class)->create(['name' => 'css']);
+
+        $backendDev = factory(User::class)->create();
+        $backendDev->skills()->attach($php);
+
+        $frontendDev = factory(User::class)->create();
+        $frontendDev->skills()->attach($css);
+
+        $fullendDev = factory(User::class)->create();
+        $fullendDev->skills()->attach([$php->id, $css->id]);
+
+        $response = $this->get("/usuarios?skills[0]={$php->id}&skills[1]={$css->id}");
+
+        $response->assertStatus(200);
+
+        $response->assertViewCollection('users')
+            ->contains($fullendDev)
+            ->notcontains($backendDev)
+            ->notcontains($frontendDev);
+
+    }
 }

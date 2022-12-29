@@ -4,6 +4,12 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
+use Illuminate\Database\Eloquent\Builder;
+use App\Skill;
+use App\Profession;
+use App\Http\ViewComposers\UserFieldComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
