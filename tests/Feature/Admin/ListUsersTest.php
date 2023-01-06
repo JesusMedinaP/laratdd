@@ -100,4 +100,90 @@ class ListUsersTest extends TestCase
             ])
             ->assertDontSee('Tercer usuario');
     }
+
+    /** @test */
+
+    function users_are_ordered_by_name()
+    {
+        factory(User::class)->create(['first-name' => 'John Doe']);
+        factory(User::class)->create(['first-name' => 'Richard Doe']);
+        factory(User::class)->create(['first-name' => 'Jane Doe']);
+
+        $this->get('/usuarios?order=first_named&direction=desc')
+            ->assertSeeInOrder([
+                'Jane Doe',
+                'John Doe',
+                'Richard Doe'
+            ]);
+
+        $this->get('/usuarios?order=first_named&direction=desc')
+            ->assertSeeInOrder([
+                'Richard Doe',
+                'John Doe',
+                'Jane Doe'
+            ]);
+    }
+
+    /** @test */
+
+    function users_are_ordered_by_email()
+    {
+        factory(User::class)->create(['email' => 'john.doe@example.com']);
+        factory(User::class)->create(['email' => 'richard.doe@example.com']);
+        factory(User::class)->create(['email' => 'jane.doe@example.com']);
+
+        $this->get('/usuarios?order=emaild&direction=desc')
+            ->assertSeeInOrder([
+                'jane.doe@example.com',
+                'john.doe@example.com',
+                'richard.doe@example.com'
+            ]);
+
+        $this->get('/usuarios?order=email&direction=desc')
+            ->assertSeeInOrder([
+                'richard.doe@example.com',
+                'john.doe@example.com',
+                'jane.doe@example.com'
+            ]);
+    }
+
+    /** @test */
+
+    function users_are_ordered_by_date()
+    {
+        factory(User::class)->create(['first-name' => 'John Doe', 'created_at' =>now()->subDays(2)]);
+        factory(User::class)->create(['first-name' => 'Richard Doe', 'created_at' =>now()->subDays(3)]);
+        factory(User::class)->create(['first-name' => 'Jane Doe', 'created_at' =>now()->subDays(5)]);
+
+        $this->get('/usuarios?order=created_at&direction=desc')
+            ->assertSeeInOrder([
+                'Jane Doe',
+                'Richard Doe',
+                'John Doe',
+
+            ]);
+
+        $this->get('/usuarios?order=created_at&direction=desc')
+            ->assertSeeInOrder([
+                'John Doe',
+                'Richard Doe',
+                'Jane Doe'
+            ]);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
